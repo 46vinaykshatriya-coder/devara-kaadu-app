@@ -52,7 +52,7 @@ interface OpenRouterApi {
 
     @Headers(
 
-        "Authorization: Bearer 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",
+        "Authorization: BuildConfig.OPENROUTER_API_KEY",
 
         "HTTP-Referer: https://openrouter.ai",
 
