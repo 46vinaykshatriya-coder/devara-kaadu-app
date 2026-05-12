@@ -57,6 +57,22 @@ android {
 
 dependencies {
     dependencies {
+        implementation("com.google.android.gms:play-services-location:21.2.0")
+        implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+        implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+        implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+        implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+        implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+        implementation("com.google.android.gms:play-services-location:21.0.1")
+
+        implementation("androidx.preference:preference-ktx:1.2.1")
+
+        implementation("org.osmdroid:osmdroid-android:6.1.16")
+        implementation("androidx.preference:preference-ktx:1.2.1")
+        implementation("org.osmdroid:osmdroid-android:6.1.16")
 
         implementation("androidx.core:core-ktx:1.12.0")
 

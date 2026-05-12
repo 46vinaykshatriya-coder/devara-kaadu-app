@@ -12,5 +12,9 @@ data class Grove(
 
     val biodiversity: String,
 
-    val image: Int
+    val image: Int,
+
+    val latitude: Double,
+
+    val longitude: Double
 )

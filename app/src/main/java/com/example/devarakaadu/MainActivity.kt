@@ -1,8 +1,10 @@
 package com.example.devarakaadu
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
 import com.example.devarakaadu.auth.LoginScreen
 import com.example.devarakaadu.auth.RegisterScreen
@@ -12,6 +14,7 @@ import com.example.devarakaadu.profile.ProfileScreen
 import com.example.devarakaadu.session.SessionManager
 import com.example.devarakaadu.ui.screens.DetailScreen
 import com.example.devarakaadu.ui.screens.HomeScreen
+import com.example.devarakaadu.ui.screens.MapScreen
 import com.example.devarakaadu.ui.screens.SplashScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +22,24 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+        requestPermissionLauncher.launch(
+
+            arrayOf(
+
+                Manifest.permission.ACCESS_FINE_LOCATION,
+
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
 
         setContent {
 
@@ -80,7 +98,11 @@ class MainActivity : ComponentActivity() {
 
                     "Home to rare medicinal herbs, Malabar giant squirrels, exotic birds, butterflies, fungi, and native evergreen species.",
 
-                    R.drawable.forest1
+                    R.drawable.forest1,
+
+                    12.4244,
+
+                    75.7382
                 ),
 
                 Grove(
@@ -95,7 +117,11 @@ class MainActivity : ComponentActivity() {
 
                     "Contains orchids, amphibians, insects, reptiles, and endangered rainforest plant species.",
 
-                    R.drawable.forest2
+                    R.drawable.forest2,
+
+                    13.3409,
+
+                    75.8069
                 ),
 
                 Grove(
@@ -110,7 +136,11 @@ class MainActivity : ComponentActivity() {
 
                     "Supports bees, butterflies, pollinators, medicinal shrubs, and micro-organisms essential for ecosystem health.",
 
-                    R.drawable.forest3
+                    R.drawable.forest3,
+
+                    11.9416,
+
+                    75.3412
                 ),
 
                 Grove(
@@ -125,7 +155,11 @@ class MainActivity : ComponentActivity() {
 
                     "Shelters birds, bats, monkeys, reptiles, insects, and numerous epiphytic plant species.",
 
-                    R.drawable.forest4
+                    R.drawable.forest4,
+
+                    12.9716,
+
+                    77.5946
                 ),
 
                 Grove(
@@ -140,7 +174,11 @@ class MainActivity : ComponentActivity() {
 
                     "Contains endemic mammals, amphibians, medicinal plants, rare trees, and critically endangered wildlife.",
 
-                    R.drawable.forest5
+                    R.drawable.forest5,
+
+                    14.1650,
+
+                    75.0403
                 )
             )
 
@@ -227,6 +265,23 @@ class MainActivity : ComponentActivity() {
                             onProfileClick = {
 
                                 currentScreen = "profile"
+                            },
+
+                            onMapClick = {
+
+                                currentScreen = "map"
+                            }
+                        )
+                    }
+
+                    "map" -> {
+                        MapScreen(
+
+                            groves = groves,
+
+                            onBack = {
+
+                                currentScreen = "home"
                             }
                         )
                     }
@@ -251,7 +306,9 @@ class MainActivity : ComponentActivity() {
 
                         ProfileScreen(
 
-                            userEmail = loggedInEmail,                            onBack = {
+                            userEmail = loggedInEmail,
+
+                            onBack = {
 
                                 currentScreen = "home"
                             }

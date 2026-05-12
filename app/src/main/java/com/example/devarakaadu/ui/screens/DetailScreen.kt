@@ -12,7 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Forest
@@ -38,7 +38,7 @@ import com.example.devarakaadu.network.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
+import kotlinx.coroutines.withContext
 
 @Composable
 fun DetailScreen(
@@ -90,32 +90,38 @@ fun DetailScreen(
                 loading = true
 
                 val outputStream =
-                    ByteArrayOutputStream()
+                    java.io.ByteArrayOutputStream()
 
                 it.compress(
+
                     Bitmap.CompressFormat.JPEG,
+
                     90,
+
                     outputStream
                 )
 
                 val base64Image =
+
                     Base64.encodeToString(
+
                         outputStream.toByteArray(),
-                        Base64.DEFAULT
+
+                        Base64.NO_WRAP
                     )
 
                 val imageData =
                     "data:image/jpeg;base64,$base64Image"
 
                 val request =
+
                     VisionRequest(
 
                         model =
                             "openai/gpt-4o-mini",
-
                         messages = listOf(
 
-                            Message(
+                            VisionMessage(
 
                                 role = "user",
 
@@ -126,7 +132,20 @@ fun DetailScreen(
                                         type = "text",
 
                                         text =
-                                            "Identify this species and explain its ecological importance."
+                                            """
+Analyze this image carefully.
+
+Identify:
+1. Tree or plant name
+2. Scientific name
+3. Leaf type
+4. Ecological importance
+5. Medicinal uses
+6. Biodiversity contribution
+7. Environmental benefits
+
+If uncertain, give the closest possible guess instead of saying unknown.
+"""
                                     ),
 
                                     ContentPart(
@@ -134,7 +153,9 @@ fun DetailScreen(
                                         type = "image_url",
 
                                         image_url =
-                                            ImageUrl(imageData)
+                                            ImageData(
+                                                imageData
+                                            )
                                     )
                                 )
                             )
@@ -151,21 +172,38 @@ fun DetailScreen(
                             RetrofitInstance.api
                                 .generateVisionContent(request)
 
-                        aiResult =
+                        val result =
+
                             response.body()
                                 ?.choices
                                 ?.firstOrNull()
                                 ?.message
                                 ?.content
-                                ?: "No AI response"
+
+                        withContext(
+                            Dispatchers.Main
+                        ) {
+
+                            aiResult =
+                                result
+                                    ?: "No clear identification. Try closer image with good lighting."
+
+                            loading = false
+                        }
 
                     } catch (e: Exception) {
 
-                        aiResult =
-                            e.message.toString()
-                    }
+                        withContext(
+                            Dispatchers.Main
+                        ) {
 
-                    loading = false
+                            aiResult =
+                                e.message
+                                    ?: "AI Error"
+
+                            loading = false
+                        }
+                    }
                 }
             }
         }
@@ -310,7 +348,9 @@ fun DetailScreen(
                             Brush.verticalGradient(
 
                                 colors = listOf(
+
                                     Color.Transparent,
+
                                     Color.Black.copy(alpha = 0.55f)
                                 )
                             )
@@ -328,14 +368,19 @@ fun DetailScreen(
                     Modifier
                         .padding(18.dp)
                         .background(
+
                             Color.White.copy(alpha = 0.18f),
+
                             RoundedCornerShape(14.dp)
                         )
             ) {
 
                 Icon(
-                    Icons.Default.ArrowBack,
+
+                    Icons.AutoMirrored.Filled.ArrowBack,
+
                     null,
+
                     tint = Color.White
                 )
             }
@@ -393,8 +438,11 @@ fun DetailScreen(
                 icon = {
 
                     Icon(
+
                         Icons.Default.Forest,
+
                         null,
+
                         tint = Color(0xFF2D6A4F)
                     )
                 }
@@ -414,8 +462,11 @@ fun DetailScreen(
                 icon = {
 
                     Icon(
+
                         Icons.Default.Science,
+
                         null,
+
                         tint = Color(0xFF2D6A4F)
                     )
                 }
@@ -435,8 +486,11 @@ fun DetailScreen(
                 icon = {
 
                     Icon(
+
                         Icons.Default.WaterDrop,
+
                         null,
+
                         tint = Color(0xFF2D6A4F)
                     )
                 }
@@ -454,8 +508,11 @@ fun DetailScreen(
                 icon = {
 
                     Icon(
+
                         Icons.Default.CameraAlt,
+
                         null,
+
                         tint = Color.White
                     )
                 },
@@ -480,8 +537,11 @@ fun DetailScreen(
                 icon = {
 
                     Icon(
+
                         Icons.Default.BugReport,
+
                         null,
+
                         tint = Color.White
                     )
                 },
